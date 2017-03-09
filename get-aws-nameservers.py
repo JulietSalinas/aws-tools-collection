@@ -3,8 +3,14 @@
 import boto3
 import os
 
-#f = open('zone_ids.txt')
-#zones = f.read().split('\n')
+#
+# Just a simple tool for pulling in the nameservers for all hosted zones on your AWS account
+# Usage: set your IAM access keys in your environment variables and run:
+# python get-aws-nameservers.py
+#
+
+def main():
+
 client = boto3.client('route53')
 hosted_zones = client.list_hosted_zones()
 zones = []
@@ -12,7 +18,6 @@ zones = []
 for ZoneId in hosted_zones.get("HostedZones"):
     zones.extend([ZoneId.get("Id").translate(None, '/hostedzone/')])
 
-def main():
     for zone in zones:
         response = client.get_hosted_zone(Id=zone)
         HostedZone = response.get("HostedZone")
